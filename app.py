@@ -40,8 +40,8 @@ if search_query:
         filtered_df["JUDUL"].str.contains(search_query, case=False, na=False) |
         filtered_df["TEMA"].str.contains(search_query, case=False, na=False)
     ]
-filtered_df = filtered_df.sort_values(by="TANGGAL", ascending=False)
-filtered_df["TANGGAL_TAMPIL"] = filtered_df["TANGGAL"].dt.strftime("%d %b %Y")
+    filtered_df = filtered_df.sort_values(by="TANGGAL", ascending=False)
+    filtered_df["TANGGAL_TAMPIL"] = filtered_df["TANGGAL"].dt.strftime("%d %b %Y")
 
 # Header utama
 st.title("Dashboard Video Komdigi Newsroom")
@@ -50,7 +50,7 @@ if start_date != df["TANGGAL"].min() or end_date != df["TANGGAL"].max() or searc
     if search_query:
         sub_header += f", dengan kata kunci \"{search_query}\""
     st.subheader(sub_header)
-st.divider()
+    st.divider()
 
 # Word Cloud
 text_data = " ".join(filtered_df["JUDUL"].astype(str) + " " + filtered_df["ATRIBUSI"].astype(str))
