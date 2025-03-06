@@ -12,7 +12,7 @@ import nltk
 
 
 # Load credentials dari Streamlit Secrets
-creds_dict = json.loads(st.secrets["google_credentials"])
+creds_dict = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
 creds = Credentials.from_service_account_info(creds_dict)
 
 # Konfigurasi koneksi ke Google Spreadsheet
