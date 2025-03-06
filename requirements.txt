@@ -6,3 +6,6 @@ matplotlib
 wordcloud
 plotly
 nltk
+torch
+torchvision
+torchaudio
