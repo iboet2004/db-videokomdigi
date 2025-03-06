@@ -22,7 +22,7 @@ data = worksheet.get_all_records()
 df = pd.DataFrame(data)
 
 # Load credentials dari Streamlit Secrets
-creds_dict = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
+creds_dict = json.loads(st.secrets["google_credentials"])
 creds = Credentials.from_service_account_info(creds_dict)
 
 # Bersihkan dan format data
