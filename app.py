@@ -1,3 +1,4 @@
+import json
 import streamlit as st
 import pandas as pd
 import gspread
@@ -19,6 +20,10 @@ spreadsheet = client.open_by_url(SHEET_URL)
 worksheet = spreadsheet.worksheet("dataset")
 data = worksheet.get_all_records()
 df = pd.DataFrame(data)
+
+# Load credentials dari Streamlit Secrets
+creds_dict = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
+creds = Credentials.from_service_account_info(creds_dict)
 
 # Bersihkan dan format data
 df.columns = [col.replace("data_", "") for col in df.columns]
