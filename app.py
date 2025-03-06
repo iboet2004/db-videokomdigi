@@ -11,19 +11,18 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
 
 
+# Load credentials dari Streamlit Secrets
+creds_dict = json.loads(st.secrets["google_credentials"])
+creds = Credentials.from_service_account_info(creds_dict)
+
 # Konfigurasi koneksi ke Google Spreadsheet
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1AqC7MXO-n4CFkKrf5WDdf1cU1HjZZ-CyQtBirmCBRNk/edit?gid=878595289"
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = Credentials.from_service_account_file("credentials.json", scopes=scope)
 client = gspread.authorize(creds)
 spreadsheet = client.open_by_url(SHEET_URL)
 worksheet = spreadsheet.worksheet("dataset")
 data = worksheet.get_all_records()
 df = pd.DataFrame(data)
 
-# Load credentials dari Streamlit Secrets
-creds_dict = json.loads(st.secrets["google_credentials"])
-creds = Credentials.from_service_account_info(creds_dict)
 
 # Bersihkan dan format data
 df.columns = [col.replace("data_", "") for col in df.columns]
