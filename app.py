@@ -10,31 +10,11 @@ import torch
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
 
-   # Load credentials from Streamlit secrets
-        creds = service_account.Credentials.from_service_account_info(
-            st.secrets["google_credentials"], scopes=['https://www.googleapis.com/auth/spreadsheets.readonly'])
+# **Ambil langsung tanpa json.loads()**
+creds_dict = st.secrets["google_credentials"]
+creds = Credentials.from_service_account_info(creds_dict)
 
-        # Build the Google Sheets service
-        service = build('sheets', 'v4', credentials=creds)
-
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
-        values = result.get('values', [])
-
-        if not values:
-            print('No data found.')
-            return None
-
-        # Convert to DataFrame
-        df = pd.DataFrame(values[1:], columns=values[0]) # First row as header
-        return df
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
-
-# Konfigurasi koneksi ke Google Spreadsheet
+# **Hubungkan ke Google Sheets**
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1AqC7MXO-n4CFkKrf5WDdf1cU1HjZZ-CyQtBirmCBRNk/edit?gid=878595289"
 client = gspread.authorize(creds)
 spreadsheet = client.open_by_url(SHEET_URL)
