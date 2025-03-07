@@ -68,6 +68,23 @@ ax.axis("off")
 st.pyplot(fig)
 st.divider()
 
+# Pie Chart Distribusi Format Konten
+st.subheader("📊 Distribusi Format Konten")
+
+if "format" in filtered_df.columns:
+    format_counts = filtered_df["format"].value_counts().reset_index()
+    format_counts.columns = ["Format", "Jumlah"]
+    
+    fig_pie = px.pie(
+        format_counts, values="Jumlah", names="Format", 
+        title="Distribusi Format Konten",
+        color_discrete_sequence=px.colors.qualitative.Set2
+    )
+    
+    st.plotly_chart(fig_pie)
+else:
+    st.warning("Kolom 'format' tidak ditemukan di data. Pastikan nama kolom sesuai.")
+
 # Heatmap Tren Tema
 filtered_df["MINGGU"] = filtered_df["TANGGAL"].dt.to_period("W").astype(str)
 topic_counts = filtered_df.groupby(["MINGGU", "TEMA"]).size().reset_index(name='jumlah')
