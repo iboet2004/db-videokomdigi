@@ -58,7 +58,7 @@ if start_date != df["TANGGAL"].min() or end_date != df["TANGGAL"].max() or searc
 
 # Word Cloud
 text_data = " ".join(filtered_df["JUDUL"].astype(str) + " " + filtered_df["ATRIBUSI"].astype(str))
-custom_stopwords = STOPWORDS.union({"pastikan", "bisa", "tak", "Jadi", "unknown", "di", "ke", "Ini", "bagi", "resmi", "siap", "dapat", "akan", "dan", "atau", "yang", "untuk", "dalam", "dengan", "pada"})
+custom_stopwords = STOPWORDS.union({"pastikan", "tanpa narasumber","bisa", "tak", "Jadi", "unknown", "di", "ke", "Ini", "bagi", "resmi", "siap", "dapat", "akan", "dan", "atau", "yang", "untuk", "dalam", "dengan", "pada"})
 wordcloud = WordCloud(width=800, height=400, background_color='black', colormap='coolwarm', contour_color='white', contour_width=2, stopwords=custom_stopwords).generate(text_data)
 
 st.subheader("☁️ Word Cloud Topik Utama")
