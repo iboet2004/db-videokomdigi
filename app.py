@@ -156,6 +156,8 @@ st.divider()
 
 
 # ====================================================
+import plotly.graph_objects as go
+
 # Contoh data (gunakan filtered_df sesuai dataset asli)
 df_sankey = filtered_df.groupby(["ATRIBUSI", "TEMA"]).size().reset_index(name="jumlah")
 
