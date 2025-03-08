@@ -102,6 +102,60 @@ else:
     st.warning("⚠️ Kolom 'format' tidak ditemukan di data. Pastikan nama kolom sesuai.")
 
 
+import streamlit as st
+import plotly.express as px
+import plotly.graph_objects as go
+
+st.subheader("📌 Tren Produksi Harian per Format Konten")
+
+if "format" in filtered_df.columns:
+    produksi_harian = filtered_df.groupby(["TANGGAL", "format"]).size().reset_index(name="jumlah")
+
+    # Membuat plot menggunakan go.Figure()
+    fig = go.Figure()
+
+    # Loop untuk setiap format konten
+    for format_konten in produksi_harian["format"].unique():
+        df_subset = produksi_harian[produksi_harian["format"] == format_konten]
+        
+        # Tambahkan line chart dengan marker
+        fig.add_trace(go.Scatter(
+            x=df_subset["TANGGAL"],
+            y=df_subset["jumlah"],
+            mode="lines+markers",
+            name=format_konten,
+            line=dict(width=2),
+            marker=dict(size=8)
+        ))
+
+        # Tambahkan area fill (transparan)
+        fig.add_trace(go.Scatter(
+            x=df_subset["TANGGAL"],
+            y=df_subset["jumlah"],
+            mode="lines",
+            name=f"{format_konten} Fill",
+            line=dict(width=0),
+            fill='tonexty',
+            opacity=0.4
+        ))
+
+    # Modifikasi tampilan
+    fig.update_layout(
+        title="Tren Produksi Harian per Format Konten",
+        xaxis_title="Tanggal",
+        yaxis_title="Jumlah Produksi",
+        template="plotly_dark",  # Ubah ke tema gelap
+        xaxis=dict(tickangle=-30),  # Miringkan label sumbu X
+        legend=dict(title="Format Konten"),
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+
+    st.plotly_chart(fig)
+else:
+    st.warning("Kolom 'format' tidak ditemukan di data.")
+
+st.divider()
+
 # Time Series Produksi Harian per Format
 st.subheader("📌 Tren Produksi Harian per Format Konten")
 if "format" in filtered_df.columns:
