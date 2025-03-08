@@ -148,4 +148,4 @@ st.plotly_chart(fig_sentiment)
 
 # Tampilkan tabel dengan kolom sentimen
 st.subheader("📄 Data dengan Sentimen")
-st.dataframe(filtered_df[["TANGGAL_TAMPIL", "JUDUL", "TEMA", "Sentimen"]])
+st.dataframe(filtered_df[["TANGGAL_TAMPIL", "format", "JUDUL", "TEMA", "Sentimen"]])
