@@ -72,9 +72,6 @@ ax.axis("off")
 st.pyplot(fig)
 st.divider()
 
-import plotly.express as px
-import streamlit as st
-
 # Subheader dengan ikon
 st.subheader("📊 Distribusi Format Konten")
 
@@ -134,25 +131,35 @@ st.subheader("🔥 Heatmap - Tren Dominasi Tema dari Waktu ke Waktu")
 st.plotly_chart(fig_heatmap)
 st.divider()
 
-# Scatter Plot Penyebutan Narasumber
+
+# Scatter Plot Narasumber Hitung jumlah penyebutan per narasumber per tanggal
 atribusi_counts = filtered_df.groupby(["TANGGAL", "ATRIBUSI"]).size().reset_index(name="jumlah")
 top_atribusi = atribusi_counts.groupby("ATRIBUSI")["jumlah"].sum().nlargest(10).index
 filtered_atribusi = atribusi_counts[atribusi_counts["ATRIBUSI"].isin(top_atribusi)]
+filtered_atribusi = filtered_atribusi[filtered_atribusi["ATRIBUSI"] != "Tanpa Narasumber"]
+filtered_atribusi = filtered_atribusi.sort_values(by="jumlah", ascending=False)
+
 fig_scatter = px.scatter(
-    filtered_atribusi, x="TANGGAL", y="ATRIBUSI", size="jumlah", color="ATRIBUSI",
+    filtered_atribusi, 
+    x="TANGGAL", 
+    y="ATRIBUSI", 
+    size="jumlah", 
+    color="ATRIBUSI",
     labels={"jumlah": "Jumlah Penyebutan", "TANGGAL": "Tanggal", "ATRIBUSI": "Narasumber"},
+    color_discrete_sequence=px.colors.qualitative.Prism  # Warna modern dan elegan
 )
 
 fig_scatter.update_layout(showlegend=False)
 st.subheader("📌 Scatter Plot Tren Penyebutan Narasumber")
-st.plotly_chart(fig_scatter)
+st.plotly_chart(fig_scatter, use_container_width=True)
+
 st.divider()
 
 # 3D Scatter Plot Narasumber vs. Format vs. Tanggal
 fig_3d_scatter = px.scatter_3d(
-    filtered_df, x="TANGGAL", y="format", z="ATRIBUSI", 
+    filtered_df, x="TANGGAL", y="TEMA", z="ATRIBUSI", 
     color="format", size_max=10,
-    title="📌 3D Scatter Plot Narasumber vs. Format vs. Tanggal"
+    title="📌 3D Scatter Plot Narasumber vs. Tema vs. Tanggal"
 )
 
 st.plotly_chart(fig_3d_scatter)
