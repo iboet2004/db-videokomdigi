@@ -50,7 +50,7 @@ filtered_df["TANGGAL_TAMPIL"] = filtered_df["TANGGAL"].dt.strftime("%d %b %Y")
 st.title("Dashboard Konten Komdigi Newsroom")
 if filtered_df.empty:
     st.warning("Tidak ada data yang ditemukan untuk filter ini.")
-    st.image("https://via.placeholder.com/500x300.png?text=Data+Not+Found", use_column_width=True)
+    st.image("https://via.placeholder.com/500x300.png?text=Data+Not+Found", use_container_width=True)
     st.stop()
 
 if start_date != df["TANGGAL"].min() or end_date != df["TANGGAL"].max() or search_query:
