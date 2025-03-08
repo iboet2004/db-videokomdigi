@@ -85,6 +85,20 @@ if "format" in filtered_df.columns:
 else:
     st.warning("Kolom 'format' tidak ditemukan di data. Pastikan nama kolom sesuai.")
 
+# Time Series Produksi Harian per Format
+st.subheader("📌 Tren Produksi Harian per Format Konten")
+if "format" in filtered_df.columns:
+    produksi_harian = filtered_df.groupby(["TANGGAL", "format"]).size().reset_index(name="jumlah")
+    fig_time_series = px.line(
+        produksi_harian, x="TANGGAL", y="jumlah", color="format",
+        labels={"TANGGAL": "Tanggal", "jumlah": "Jumlah Produksi", "format": "Format Konten"},
+        markers=True,
+    )
+    st.plotly_chart(fig_time_series)
+else:
+    st.warning("Kolom 'format' tidak ditemukan di data.")
+st.divider()
+
 # Heatmap Tren Tema
 filtered_df["MINGGU"] = filtered_df["TANGGAL"].dt.to_period("W").astype(str)
 topic_counts = filtered_df.groupby(["MINGGU", "TEMA"]).size().reset_index(name='jumlah')
