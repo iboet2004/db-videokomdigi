@@ -131,7 +131,6 @@ st.subheader("🔥 Heatmap - Tren Dominasi Tema dari Waktu ke Waktu")
 st.plotly_chart(fig_heatmap)
 st.divider()
 
-
 # Scatter Plot Narasumber Hitung jumlah penyebutan per narasumber per tanggal
 atribusi_counts = filtered_df.groupby(["TANGGAL", "ATRIBUSI"]).size().reset_index(name="jumlah")
 top_atribusi = atribusi_counts.groupby("ATRIBUSI")["jumlah"].sum().nlargest(10).index
@@ -155,15 +154,56 @@ st.plotly_chart(fig_scatter, use_container_width=True)
 
 st.divider()
 
-# 3D Scatter Plot Narasumber vs. Format vs. Tanggal
-fig_3d_scatter = px.scatter_3d(
-    filtered_df, x="TANGGAL", y="TEMA", z="ATRIBUSI", 
-    color="TEMA", size_max=10,
-    title="📌 3D Scatter Plot Narasumber vs. Tema vs. Tanggal"
+
+# ====================================================
+# Contoh data (gunakan filtered_df sesuai dataset asli)
+df_sankey = filtered_df.groupby(["ATRIBUSI", "TEMA"]).size().reset_index(name="jumlah")
+
+# Buat daftar unik untuk node (nara sumber + tema)
+all_nodes = list(df_sankey["ATRIBUSI"].unique()) + list(df_sankey["TEMA"].unique())
+
+# Buat mapping index untuk Sankey
+node_dict = {node: idx for idx, node in enumerate(all_nodes)}
+
+# Buat data untuk Sankey Diagram
+source = df_sankey["ATRIBUSI"].map(node_dict)
+target = df_sankey["TEMA"].map(node_dict)
+value = df_sankey["jumlah"]
+
+# Plot Sankey Diagram
+fig_sankey = go.Figure(go.Sankey(
+    node=dict(
+        pad=15, thickness=20,
+        label=all_nodes, 
+        color=["#636EFA"] * len(all_nodes)  # Warna modern
+    ),
+    link=dict(
+        source=source, 
+        target=target, 
+        value=value
+    )
+))
+
+# Tampilkan di Streamlit
+st.subheader("🔗 Hubungan Narasumber dan Tema")
+st.plotly_chart(fig_sankey, use_container_width=True)
+
+# ===
+
+# Buat pivot table untuk heatmap
+heatmap_data = filtered_df.pivot_table(index="ATRIBUSI", columns="TEMA", aggfunc="size", fill_value=0)
+
+# Buat heatmap
+fig_heatmap = px.imshow(
+    heatmap_data, 
+    labels=dict(x="Tema", y="Narasumber", color="Jumlah Penyebutan"),
+    color_continuous_scale="Viridis"  # Warna modern
 )
 
-st.plotly_chart(fig_3d_scatter)
-
+# Tampilkan di Streamlit
+st.subheader("🔥 Heatmap Narasumber vs Tema")
+st.plotly_chart(fig_heatmap, use_container_width=True)
+# =================================================
 
 # Download VADER Lexicon (hanya perlu sekali)
 nltk.download('vader_lexicon')
