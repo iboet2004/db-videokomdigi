@@ -72,22 +72,38 @@ ax.axis("off")
 st.pyplot(fig)
 st.divider()
 
-# Pie Chart Distribusi Format Konten
+import plotly.express as px
+import streamlit as st
+
+# Subheader dengan ikon
 st.subheader("📊 Distribusi Format Konten")
 
 if "format" in filtered_df.columns:
     format_counts = filtered_df["format"].value_counts().reset_index()
     format_counts.columns = ["Format", "Jumlah"]
-    
+
+    # Buat pie chart dalam format 3D (doughnut-style)
     fig_pie = px.pie(
-        format_counts, values="Jumlah", names="Format", 
-        title="Distribusi Format Konten",
-        color_discrete_sequence=px.colors.qualitative.Set2
+        format_counts, 
+        values="Jumlah", 
+        names="Format", 
+        title="Distribusi Format Konten", 
+        color_discrete_sequence=px.colors.sequential.Tealgrn,  # Warna modern & elegan
+        hole=0.4  # Membuat tampilan seperti 3D (doughnut)
     )
-    
-    st.plotly_chart(fig_pie)
+
+    # Tambahkan nilai absolut & persentase di label
+    fig_pie.update_traces(
+        textinfo="label+value+percent",  # Menampilkan Nama, Jumlah, dan Persentase
+        pull=[0.05] * len(format_counts)  # Sedikit menarik slice agar lebih estetis
+    )
+
+    # Tampilkan chart
+    st.plotly_chart(fig_pie, use_container_width=True)
+
 else:
-    st.warning("Kolom 'format' tidak ditemukan di data. Pastikan nama kolom sesuai.")
+    st.warning("⚠️ Kolom 'format' tidak ditemukan di data. Pastikan nama kolom sesuai.")
+
 
 # Time Series Produksi Harian per Format
 st.subheader("📌 Tren Produksi Harian per Format Konten")
