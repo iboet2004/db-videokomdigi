@@ -158,7 +158,7 @@ st.divider()
 # 3D Scatter Plot Narasumber vs. Format vs. Tanggal
 fig_3d_scatter = px.scatter_3d(
     filtered_df, x="TANGGAL", y="TEMA", z="ATRIBUSI", 
-    color="format", size_max=10,
+    color="TEMA", size_max=10,
     title="📌 3D Scatter Plot Narasumber vs. Tema vs. Tanggal"
 )
 
