@@ -85,25 +85,20 @@ if "format" in filtered_df.columns:
 else:
     st.warning("Kolom 'format' tidak ditemukan di data. Pastikan nama kolom sesuai.")
 
-# Time Series Chart: Jumlah Produksi Per Hari Per Format
-st.subheader("📈 Tren Produksi Konten per Hari")
+# Time Series Produksi Harian per Format
+produksi_harian = filtered_df.groupby(["TANGGAL", "FORMAT"]).size().reset_index(name="jumlah")
 
-# Pastikan kolom "tanggal" dalam format datetime
-filtered_df["tanggal"] = pd.to_datetime(filtered_df["tanggal"], format="%d-%b-%Y")
-
-# Hitung jumlah produksi per hari per format
-time_series_data = filtered_df.groupby(["tanggal", "format"]).size().reset_index(name="jumlah")
-
-# Plot time series dengan warna berbeda untuk setiap format konten
 fig_time_series = px.line(
-    time_series_data, x="tanggal", y="jumlah", color="format",
-    title="Tren Produksi Konten per Hari",
+    produksi_harian, x="TANGGAL", y="jumlah", color="FORMAT",
+    labels={"TANGGAL": "Tanggal", "jumlah": "Jumlah Produksi", "FORMAT": "Format Konten"},
     markers=True,
-    labels={"tanggal": "Tanggal", "jumlah": "Jumlah Produksi", "format": "Format Konten"},
-    color_discrete_sequence=px.colors.qualitative.Set1  # Warna berbeda untuk tiap format
 )
 
+fig_time_series.update_layout(showlegend=True)
+st.subheader("📈 Tren Produksi Harian per Format Konten")
 st.plotly_chart(fig_time_series)
+st.divider()
+
 
 
 # Heatmap Tren Tema
