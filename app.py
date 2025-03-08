@@ -128,6 +128,16 @@ st.subheader("📌 Scatter Plot Tren Penyebutan Narasumber")
 st.plotly_chart(fig_scatter)
 st.divider()
 
+# 3D Scatter Plot Narasumber vs. Format vs. Tanggal
+fig_3d_scatter = px.scatter_3d(
+    filtered_df, x="TANGGAL", y="format", z="ATRIBUSI", 
+    color="format", size_max=10,
+    title="📌 3D Scatter Plot Narasumber vs. Format vs. Tanggal"
+)
+
+st.plotly_chart(fig_3d_scatter)
+
+
 # Download VADER Lexicon (hanya perlu sekali)
 nltk.download('vader_lexicon')
 
