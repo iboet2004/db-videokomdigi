@@ -159,32 +159,41 @@ st.divider()
 import plotly.graph_objects as go
 
 # Plotly Sankey
-df_sankey = filtered_df.groupby(["ATRIBUSI", "TEMA"]).size().reset_index(name="jumlah")
+# Filter hanya data yang relevan dan hilangkan "Tanpa Narasumber"
+df_sankey = filtered_df[filtered_df["ATRIBUSI"] != "Tanpa Narasumber"]
+df_sankey = df_sankey.groupby(["ATRIBUSI", "TEMA"]).size().reset_index(name="jumlah")
 
+# Pilih Top 5 Narasumber berdasarkan total penyebutan
 top_5_narasumber = df_sankey.groupby("ATRIBUSI")["jumlah"].sum().nlargest(5).index
 df_sankey = df_sankey[df_sankey["ATRIBUSI"].isin(top_5_narasumber)]
 
+# Pilih Top 10 Tema berdasarkan total penyebutan
 top_10_tema = df_sankey.groupby("TEMA")["jumlah"].sum().nlargest(10).index
 df_sankey = df_sankey[df_sankey["TEMA"].isin(top_10_tema)]
 
+# Buat daftar unik untuk node (narasumber + tema)
 all_nodes = list(df_sankey["ATRIBUSI"].unique()) + list(df_sankey["TEMA"].unique())
 
+# Mapping indeks untuk Plotly Sankey
 node_dict = {node: idx for idx, node in enumerate(all_nodes)}
 
+# Data untuk Sankey
 source = df_sankey["ATRIBUSI"].map(node_dict)
 target = df_sankey["TEMA"].map(node_dict)
 value = df_sankey["jumlah"]
 
+# Buat Sankey Diagram dengan warna modern
 fig_sankey = go.Figure(go.Sankey(
     node=dict(
         pad=15, thickness=20,
         label=all_nodes, 
-        color=["#636EFA"] * len(all_nodes)  # Warna modern
+        color=["#1F77B4", "#FF7F0E", "#2CA02C", "#D62728", "#9467BD"] * 3  # Warna modern dinamis
     ),
     link=dict(
         source=source, 
         target=target, 
-        value=value
+        value=value,
+        color="rgba(100, 100, 100, 0.4)"  # Transparansi link untuk tampilan lebih soft
     )
 ))
 
