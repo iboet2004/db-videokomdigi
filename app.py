@@ -158,21 +158,23 @@ st.divider()
 # ====================================================
 import plotly.graph_objects as go
 
-# Contoh data (gunakan filtered_df sesuai dataset asli)
+# Plotly Sankey
 df_sankey = filtered_df.groupby(["ATRIBUSI", "TEMA"]).size().reset_index(name="jumlah")
 
-# Buat daftar unik untuk node (nara sumber + tema)
+top_5_narasumber = df_sankey.groupby("ATRIBUSI")["jumlah"].sum().nlargest(5).index
+df_sankey = df_sankey[df_sankey["ATRIBUSI"].isin(top_5_narasumber)]
+
+top_10_tema = df_sankey.groupby("TEMA")["jumlah"].sum().nlargest(10).index
+df_sankey = df_sankey[df_sankey["TEMA"].isin(top_10_tema)]
+
 all_nodes = list(df_sankey["ATRIBUSI"].unique()) + list(df_sankey["TEMA"].unique())
 
-# Buat mapping index untuk Sankey
 node_dict = {node: idx for idx, node in enumerate(all_nodes)}
 
-# Buat data untuk Sankey Diagram
 source = df_sankey["ATRIBUSI"].map(node_dict)
 target = df_sankey["TEMA"].map(node_dict)
 value = df_sankey["jumlah"]
 
-# Plot Sankey Diagram
 fig_sankey = go.Figure(go.Sankey(
     node=dict(
         pad=15, thickness=20,
@@ -186,26 +188,9 @@ fig_sankey = go.Figure(go.Sankey(
     )
 ))
 
-# Tampilkan di Streamlit
-st.subheader("🔗 Hubungan Narasumber dan Tema")
+st.subheader("🔗 Hubungan Top 5 Narasumber dan Top 10 Tema")
 st.plotly_chart(fig_sankey, use_container_width=True)
-
-# ===
-
-# Buat pivot table untuk heatmap
-heatmap_data = filtered_df.pivot_table(index="ATRIBUSI", columns="TEMA", aggfunc="size", fill_value=0)
-
-# Buat heatmap
-fig_heatmap = px.imshow(
-    heatmap_data, 
-    labels=dict(x="Tema", y="Narasumber", color="Jumlah Penyebutan"),
-    color_continuous_scale="Viridis"  # Warna modern
-)
-
-# Tampilkan di Streamlit
-st.subheader("🔥 Heatmap Narasumber vs Tema")
-st.plotly_chart(fig_heatmap, use_container_width=True)
-# =================================================
+st.divider()
 
 # Download VADER Lexicon (hanya perlu sekali)
 nltk.download('vader_lexicon')
