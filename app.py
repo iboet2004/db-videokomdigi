@@ -47,7 +47,7 @@ filtered_df = filtered_df.sort_values(by="TANGGAL", ascending=False)
 filtered_df["TANGGAL_TAMPIL"] = filtered_df["TANGGAL"].dt.strftime("%d %b %Y")
 
 # Header utama
-st.title("Dashboard Konten Komdigi Newsroom")
+st.title("Dashboard Video Komdigi Newsroom")
 
 if start_date != df["TANGGAL"].min() or end_date != df["TANGGAL"].max() or search_query:
     sub_header = f"Menampilkan data rentang waktu {start_date.strftime('%d %b %Y')} hingga {end_date.strftime('%d %b %Y')}"
@@ -84,21 +84,6 @@ if "format" in filtered_df.columns:
     st.plotly_chart(fig_pie)
 else:
     st.warning("Kolom 'format' tidak ditemukan di data. Pastikan nama kolom sesuai.")
-
-# Time Series Produksi Harian per Format
-produksi_harian = filtered_df.groupby(["TANGGAL", "FORMAT"]).size().reset_index(name="jumlah")
-
-fig_time_series = px.line(
-    produksi_harian, x="TANGGAL", y="jumlah", color="FORMAT",
-    labels={"TANGGAL": "Tanggal", "jumlah": "Jumlah Produksi", "FORMAT": "Format Konten"},
-    markers=True,
-)
-
-fig_time_series.update_layout(showlegend=True)
-st.subheader("📌 Tren Produksi Harian per Format Konten")
-st.plotly_chart(fig_time_series)
-st.divider()
-
 
 # Heatmap Tren Tema
 filtered_df["MINGGU"] = filtered_df["TANGGAL"].dt.to_period("W").astype(str)
