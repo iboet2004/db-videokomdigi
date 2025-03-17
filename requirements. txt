@@ -1,0 +1,9 @@
+streamlit
+transformers
+torch
+gspread
+google-auth
+matplotlib
+wordcloud
+plotly
+pandas
