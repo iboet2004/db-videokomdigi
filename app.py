@@ -166,8 +166,10 @@ st.divider()
 
 # Analisis Sentimen dengan IndoBERTweet
 # Inisialisasi tokenizer dan model IndoBERTweet
-tokenizer = AutoTokenizer.from_pretrained("indobenchmark/indobertweet-base-sentiment")
-model = AutoModelForSequenceClassification.from_pretrained("indobenchmark/indobertweet-base-sentiment")
+
+tokenizer = AutoTokenizer.from_pretrained("cahya/bert-base-indonesian-522M")
+model = AutoModelForSequenceClassification.from_pretrained("cahya/bert-base-indonesian-522M")
+
 
 # Fungsi untuk mendapatkan sentimen dari teks menggunakan IndoBERTweet
 def get_sentiment(text):
