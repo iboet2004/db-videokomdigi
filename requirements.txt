@@ -1,11 +1,10 @@
+
 streamlit
-pandas
+transformers
+torch
 gspread
 google-auth
 matplotlib
 wordcloud
 plotly
-nltk
-torch
-torchvision
-torchaudio
+pandas
