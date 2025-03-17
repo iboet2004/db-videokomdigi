@@ -200,23 +200,36 @@ st.subheader("🔗 Hubungan Top 5 Narasumber dan Top 10 Tema")
 st.plotly_chart(fig_sankey, use_container_width=True)
 st.divider()
 
-# Download VADER Lexicon (hanya perlu sekali)
-nltk.download('vader_lexicon')
+# Pastikan Anda sudah menginstal library yang diperlukan
+# pip install transformers torch
 
-# Inisialisasi Sentiment Analyzer
-sia = SentimentIntensityAnalyzer()
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+import pandas as pd
+import streamlit as st
+import plotly.express as px
+
+# Inisialisasi tokenizer dan model IndoBERTweet
+tokenizer = AutoTokenizer.from_pretrained("indobenchmark/indobertweet-base-sentiment")
+model = AutoModelForSequenceClassification.from_pretrained("indobenchmark/indobertweet-base-sentiment")
+
+# Fungsi untuk mendapatkan sentimen dari teks menggunakan IndoBERTweet
+def get_sentiment(text):
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    logits = outputs.logits
+    predicted_class = logits.argmax().item()
+    
+    # Kategori sentimen berdasarkan prediksi
+    if predicted_class == 0:
+        return "Negatif"
+    elif predicted_class == 1:
+        return "Netral"
+    else:
+        return "Positif"
 
 # Tambahkan kolom sentimen berdasarkan judul
-def get_sentiment(text):
-    score = sia.polarity_scores(text)["compound"]
-    if score >= 0.05:
-        return "Positif"
-    elif score <= -0.05:
-        return "Negatif"
-    else:
-        return "Netral"
-
-# Terapkan sentimen ke judul video
 filtered_df["Sentimen"] = filtered_df["JUDUL"].astype(str).apply(get_sentiment)
 
 # Tampilkan hasil di Streamlit
@@ -230,7 +243,9 @@ fig_sentiment = px.bar(
     color_discrete_map={"Positif": "green", "Netral": "gray", "Negatif": "red"}
 )
 
+# Tampilkan grafik di Streamlit
 st.plotly_chart(fig_sentiment)
+
 
 # Tampilkan tabel dengan kolom sentimen
 st.subheader("📄 Data dengan Sentimen")
